@@ -1,0 +1,29 @@
+https://github.com/jbbernardin/2121Project_YTModeling.git
+
+
+i) YouTube Modeling Project
+
+ii) The goal of this project is to model a YouTube channel, starting from scratch with no subscribers or views, and simulate its growth over time with daily uploads.
+With a completed model, there should be a distribution such that a small portion of channels modeled through this simulation will receive 1,000,000 subscribers,
+which I am using as a metric to indicate an established creator, i.e. this individual could generate their primary income from this channel, but the majority of 
+channels should not receive nearly as much success.
+
+iii) The first simulation is being submitted with this text file, but can also be accessed via the above github link. The description is as follows:
+% This function models a youtube channel posting videos starting with 0 
+% views and 0 subscribers. Assuming one video is uploaded a day, this
+% each day the total number of users are iterated through and have a chance
+% to view the video. Their chance of viewing the video increases as views
+% accumulate on that video. Additionally, each viewer has a percent chance
+% of subscribing. A subscribed viewer has a significantly higher chance of
+% viewing future videos.
+
+iv) My findings on the most recent run of this code was a total subscriber count of 47 and 185 total views. This is significantly lower than I would have expected to
+see over 1000 days, but I was only able to have this code run with 1/1000 of the total site traffic. 
+
+v) Going forward, I need to complete the following, in order of priority:
+1. optimize my code so I can account for the full site traffic
+2. ensure views from subscribers, not just from non-subscribed users, also influence views from viewers
+3. graph one channel's growth, focusing on daily views and subscribers
+4. graph a histogram of multiple channels' subscribers/views
+5. tweak percentages until the histogram has only a small percentage of channels with 1000000+ subscribers
+6. implement other factors such as likes, comments and watch time
