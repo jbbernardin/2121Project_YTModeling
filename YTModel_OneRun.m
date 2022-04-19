@@ -1,4 +1,4 @@
-function YTModel
+function YTModel_OneRun
 %YTMODEL
 % This function models a youtube channel posting videos starting with 0 
 % views and 0 subscribers. Assuming one video is uploaded a day, this
@@ -58,7 +58,7 @@ subscribed = zeros(Nusers,1);
 % step through time (assuming one video uploaded a day)
 for i=1:Ndays
     time(i)=i; % update time (for graphing)
-    i
+    fprintf('Week: %d\n\n',i)
     % stat trackers per unit of time
     viewed = 0;
     liked = 0;
@@ -122,7 +122,6 @@ for i=1:Ndays
     comments(i)=commented;
     subs(i)=subbed;
 end
-p
 figure()
 plot(time,subs, 'r')
 hold on
@@ -140,15 +139,20 @@ plot(time,subs, 'r')
 hold on
 xlabel('time')
 ylabel('users')
-title('Channel Growth Over One Year')
+title('Channel Growth Over One Year: Subs,Comments,Dislikes')
 plot(time,comments, 'g')
 plot(time,dislikes, 'y')
+hold off
 
-total_views
-total_subs
-total_likes
-total_dislikes
-total_comments
+figure()
+title('Channel Growth Over One Year: Dislikes')
+plot(time,dislikes, 'y')
+
+fprintf('Total views: %d\n\n',total_views)
+fprintf('Total subs: %d\n\n',total_subs)
+disp('Total likes: %d\n\n',total_likes)
+disp('Total dislikes: %d\n\n',total_dislikes)
+disp('Total Comments: %d\n\n',total_comments)
 
 toc
 end

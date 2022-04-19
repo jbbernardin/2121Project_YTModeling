@@ -10,3 +10,9 @@ https://www.omnicoreagency.com/youtube-statistics/#:~:text=There%20are%20more%20
 at least 29000 channels with over 1000000 subs, 306k with over 100k
 https://www.tubics.com/blog/number-of-youtube-channels
 
+Fisher-Yates shuffle algorithm used in code
+Jan (2022). Shuffle (https://www.mathworks.com/matlabcentral/fileexchange/27076-shuffle), MATLAB Central File Exchange. Retrieved April 17, 2022
+
+
+
+
