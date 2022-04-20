@@ -13,3 +13,13 @@ Elapsed time is 244.409201 seconds.
 
 Histogram:
 Elapsed time is 22476.998463 seconds. (over 6 hours)
+
+Exponential Base Investigation:
+Elapsed time is 4604.090013 seconds.
+
+Elapsed time is 4645.731182 seconds.
+
+Elapsed time is 4657.081324 seconds.
+
+Elapsed time is 4653.601809 seconds.
+
