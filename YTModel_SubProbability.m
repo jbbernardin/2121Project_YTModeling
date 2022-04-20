@@ -134,8 +134,8 @@ end
 figure()
 plot(sub_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('sub prob')
+ylabel('totals')
 title('Investigation of Sub Probability')
 plot(sub_prob,total_views, 'k')
 plot(sub_prob,total_likes, 'b')
@@ -146,8 +146,8 @@ hold off
 figure()
 plot(sub_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('sub prob')
+ylabel('totals')
 title('Investigation of Sub Probability: Subs,Comments,Dislikes')
 plot(sub_prob,total_comments, 'g')
 plot(sub_prob,total_dislikes, 'y')

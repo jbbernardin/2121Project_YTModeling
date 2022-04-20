@@ -139,8 +139,8 @@ end
 figure()
 plot(a,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('a')
+ylabel('totals')
 title('Investigation of Viewed Exponential')
 plot(a,total_views, 'k')
 plot(a,total_likes, 'b')
@@ -151,8 +151,8 @@ hold off
 figure()
 plot(a,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('a')
+ylabel('totals')
 title('Investigation of Viewed Exponential: Subs,Comments,Dislikes')
 plot(a,total_comments, 'g')
 plot(a,total_dislikes, 'y')

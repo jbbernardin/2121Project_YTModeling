@@ -139,8 +139,8 @@ end
 figure()
 plot(b,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('b')
+ylabel('totals')
 title('Investigation of Liked Exponential')
 plot(b,total_views, 'k')
 plot(b,total_likes, 'b')
@@ -151,8 +151,8 @@ hold off
 figure()
 plot(b,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('b')
+ylabel('totals')
 title('Investigation of Liked Exponential: Subs,Comments,Dislikes')
 plot(b,total_comments, 'g')
 plot(b,total_dislikes, 'y')

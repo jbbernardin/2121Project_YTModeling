@@ -134,8 +134,8 @@ end
 figure()
 plot(comment_ns_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('comment not subbed prob')
+ylabel('totals')
 title('Investigation of Comment (Not Subbed) Probability')
 plot(comment_ns_prob,total_views, 'k')
 plot(comment_ns_prob,total_likes, 'b')
@@ -146,8 +146,8 @@ hold off
 figure()
 plot(comment_ns_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('comment not subbed prob')
+ylabel('totals')
 title('Investigation of Comment (Not Subbed) Probability: Subs,Comments,Dislikes')
 plot(comment_ns_prob,total_comments, 'g')
 plot(comment_ns_prob,total_dislikes, 'y')

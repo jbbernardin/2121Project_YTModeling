@@ -134,8 +134,8 @@ end
 figure()
 plot(dislike_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('dislike prob')
+ylabel('totals')
 title('Investigation of Dislike Probability')
 plot(dislike_prob,total_views, 'k')
 plot(dislike_prob,total_likes, 'b')
@@ -146,8 +146,8 @@ hold off
 figure()
 plot(dislike_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('dislike prob')
+ylabel('totals')
 title('Investigation of Dislike Probability: Subs,Comments,Dislikes')
 plot(dislike_prob,total_comments, 'g')
 plot(dislike_prob,total_dislikes, 'y')

@@ -134,8 +134,8 @@ end
 figure()
 plot(like_ns_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('like not subbed prob')
+ylabel('totals')
 title('Investigation of Like (Not Subbed) Probability')
 plot(like_ns_prob,total_views, 'k')
 plot(like_ns_prob,total_likes, 'b')
@@ -146,8 +146,8 @@ hold off
 figure()
 plot(like_ns_prob,total_subs, 'r')
 hold on
-xlabel('time')
-ylabel('users')
+xlabel('like not subbed prob')
+ylabel('totals')
 title('Investigation of Like (Not Subbed) Probability: Subs,Comments,Dislikes')
 plot(like_ns_prob,total_comments, 'g')
 plot(like_ns_prob,total_dislikes, 'y')
