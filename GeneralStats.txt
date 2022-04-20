@@ -1,0 +1,41 @@
+OneRun:
+Total views: 1606670
+
+Total subscribers: 36120
+
+Total likes: 582518
+
+Total dislikes: 1123
+
+Total comments: 29343
+
+Elapsed time is 244.409201 seconds.
+
+
+Histogram:
+Elapsed time is 22476.998463 seconds. (over 6 hours)
+
+
+Exponential Base Investigation:
+Elapsed time is 4604.090013 seconds.
+
+Elapsed time is 4645.731182 seconds.
+
+Elapsed time is 4657.081324 seconds.
+
+Elapsed time is 4653.601809 seconds.
+
+
+Probability Investigation:
+Elapsed time is 2365.542765 seconds.
+
+Elapsed time is 2362.128129 seconds.
+
+Elapsed time is 2386.323905 seconds.
+
+Elapsed time is 2355.383508 seconds.
+
+Elapsed time is 2294.819745 seconds.
+
+Elapsed time is 2334.731224 seconds.
+
