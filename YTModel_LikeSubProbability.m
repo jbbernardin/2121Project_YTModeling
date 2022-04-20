@@ -1,4 +1,4 @@
-function YTModel_LikeExponential
+function YTModel_LikeSubProbability
 %YTMODEL
 % This function models a youtube channel posting videos starting with 0 
 % views and 0 subscribers. Assuming one video is uploaded a day, this
@@ -35,16 +35,14 @@ daily_vids = daily_hours/(60/avg_vid_length); % total videos uploaded each day
 % probabilities
 recommmend_prob = recommended_vids/daily_vids; % initial chance of viewing a video from reommended
 like_ns_prob = .005; % probability of liking a video if not subscribed
-like_sub_prob = .5; % probability of liking a video if subscribed
 dislike_prob = .0025; % probability of disliking a video (will not dislike if subscribed)
 comment_ns_prob = .00125; % probability of commenting on video if not subscribed
 comment_sub_prob = .025; % probability of commenting on video if subscribed
 sub_prob = .075; % chance of subscribing after viewing 
 
 subscribed = zeros(Nusers,1);
-Niterations = 20;
-interval = .01;
-mid = ceil((Niterations+1)/2);
+Niterations = 10;
+interval = .1;
 
 % Data Tracking
 total_views = zeros(Niterations,1); 
@@ -53,19 +51,16 @@ total_dislikes = zeros(Niterations,1);
 total_comments = zeros(Niterations,1); % total comments
 total_subs = zeros(Niterations,1); % total subscribers
 
-a=zeros(Niterations,1);
-a(1)=.95;
-b=zeros(Niterations,1);
-b(1)=1.15;
-c=zeros(Niterations,1);
-c(1)=1.4;
-d=zeros(Niterations,1);
-d(1)=1.9;
+a=1.05;
+b=1.25;
+c=1.5;
+d=2;
+
+like_sub_prob=zeros(Niterations,1);
+like_sub_prob(1)=.1;
+
 for k = 2:Niterations
-    a(k) = a(k-1)+interval;
-    b(k) = b(k-1)+interval;
-    c(k) = c(k-1)+interval;
-    d(k) = d(k-1)+interval;
+    like_sub_prob(k) = like_sub_prob(k-1)+interval;
 end
 
 for k = 1:Niterations
@@ -83,7 +78,7 @@ for k = 1:Niterations
         for j=1:Nusers
             if subscribed(j)
                 viewed = viewed+1;
-                if rand > 1-like_sub_prob
+                if rand > 1-like_sub_prob(k)
                     liked = liked+1;
                 end
                 if rand > 1-comment_sub_prob
@@ -94,14 +89,14 @@ for k = 1:Niterations
                 if max_p == 0 || isnan(max_p)
                     max_p = 1;
                 end
-                p = min(recommmend_prob*a(mid)^viewed*b(k)^liked*c(mid)^subbed*d(mid)^commented,max_p);
+                p = min(recommmend_prob*a^viewed*b^liked*c^subbed*d^commented,max_p);
                 if rand > 1-p % with a p percent chance
                     viewed = viewed+1;
                     if rand > 1-sub_prob % with a sub_prob chance
                         % subscribe
                         subscribed(j)=1;
                         subbed=subbed+1;
-                        if rand > 1-like_sub_prob
+                        if rand > 1-like_sub_prob(k)
                             liked = liked+1;
                         end
                         if rand > 1-comment_sub_prob
@@ -137,30 +132,30 @@ for k = 1:Niterations
     end
 end
 figure()
-plot(b,total_subs, 'r')
+plot(like_sub_prob,total_subs, 'r')
 hold on
 xlabel('time')
 ylabel('users')
-title('Investigation of Liked Exponential')
-plot(b,total_views, 'k')
-plot(b,total_likes, 'b')
-plot(b,total_comments, 'g')
-plot(b,total_dislikes, 'y')
+title('Investigation of Like (Subbed) Probability')
+plot(like_sub_prob,total_views, 'k')
+plot(like_sub_prob,total_likes, 'b')
+plot(like_sub_prob,total_comments, 'g')
+plot(like_sub_prob,total_dislikes, 'y')
 hold off
 
 figure()
-plot(b,total_subs, 'r')
+plot(like_sub_prob,total_subs, 'r')
 hold on
 xlabel('time')
 ylabel('users')
-title('Investigation of Liked Exponential: Subs,Comments,Dislikes')
-plot(b,total_comments, 'g')
-plot(b,total_dislikes, 'y')
+title('Investigation of Like (Subbed) Probability: Subs,Comments,Dislikes')
+plot(like_sub_prob,total_comments, 'g')
+plot(like_sub_prob,total_dislikes, 'y')
 hold off
 
 figure()
-title('Investigation of Liked Exponential: Dislikes')
-plot(b,total_dislikes, 'y')
+title('Investigation of Like (Subbed) Probability: Dislikes')
+plot(like_sub_prob,total_dislikes, 'y')
 
 toc
 end
