@@ -52,7 +52,6 @@ b=1.25;
 c=1.5;
 d=2;
 
-
 subscribed = zeros(Nusers,1);
 
 % step through time (assuming one video uploaded a day)
@@ -77,9 +76,10 @@ for i=1:Ndays
                 commented = commented+1;
             end
         else
-            max_p = disliked/viewed;
-            if max_p == 0 || isnan(max_p)
+            if disliked == 0 || viewed == 0
                 max_p = 1;
+            else
+                max_p = disliked/viewed;
             end
             p = min(recommmend_prob*a^viewed*b^liked*c^subbed*d^commented,max_p);
             if rand > 1-p % with a p percent chance
@@ -150,9 +150,9 @@ plot(time,dislikes, 'y')
 
 fprintf('Total views: %d\n\n',total_views)
 fprintf('Total subs: %d\n\n',total_subs)
-disp('Total likes: %d\n\n',total_likes)
-disp('Total dislikes: %d\n\n',total_dislikes)
-disp('Total Comments: %d\n\n',total_comments)
+fprintf('Total likes: %d\n\n',total_likes)
+fprintf('Total dislikes: %d\n\n',total_dislikes)
+fprintf('Total Comments: %d\n\n',total_comments)
 
 toc
 end

@@ -90,9 +90,10 @@ for k = 1:Niterations
                     commented = commented+1;
                 end
             else
-                max_p = disliked/viewed;
-                if max_p == 0 || isnan(max_p)
+                if disliked == 0 || viewed == 0
                     max_p = 1;
+                else
+                    max_p = disliked/viewed;
                 end
                 p = min(recommmend_prob*a(mid)^viewed*b(mid)^liked*c(k)^subbed*d(mid)^commented,max_p);
                 if rand > 1-p % with a p percent chance
