@@ -44,8 +44,7 @@ b=1.25;
 c=1.5;
 d=2;
 
-subscribed = zeros(Nusers,1);
-
+% Niterations = 50;
 Niterations = 100;
 
 % Data Tracking
@@ -57,6 +56,7 @@ total_subs = zeros(Niterations,1); % total subscribers
 
 for k = 1:Niterations
     fprintf('Iteration: %d\n\n',k)
+    subscribed = zeros(Nusers,1);
     % step through time (assuming one video uploaded a day)
     for i=1:Ndays
         % stat trackers per unit of time
@@ -127,15 +127,19 @@ end
 figure()
 histogram(total_views,floor(Niterations/5))
 title('Total Views: 100 Iterations')
+
 figure()
 histogram(total_subs,floor(Niterations/5))
 title('Total Subscribers: 100 Iterations')
+
 figure()
 histogram(total_likes,floor(Niterations/5))
 title('Total Likes: 100 Iterations')
+
 figure()
 histogram(total_comments,floor(Niterations/5))
 title('Total Comments: 100 Iterations')
+
 figure()
 histogram(total_dislikes,floor(Niterations/5))
 title('Total Dislikes: 100 Iterations')

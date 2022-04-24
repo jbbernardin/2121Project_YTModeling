@@ -40,7 +40,6 @@ dislike_prob = .0025; % probability of disliking a video (will not dislike if su
 comment_ns_prob = .00125; % probability of commenting on video if not subscribed
 sub_prob = .075; % chance of subscribing after viewing 
 
-subscribed = zeros(Nusers,1);
 Niterations = 10;
 interval = .005;
 
@@ -64,6 +63,7 @@ for k = 2:Niterations
 end
 
 for k = 1:Niterations
+    subscribed = zeros(Nusers,1);
     fprintf('Iteration: %d\n\n',k)
     % step through time (assuming one video uploaded a day)
     for i=1:Ndays
