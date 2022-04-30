@@ -1,15 +1,16 @@
-function YTModel_Histograms
-%YTMODEL_Histograms
-% This function runs a Monte Carlo simulation on multiple channels
-% uploading once a week for a year. This function is based off of
-% YTModel_OneRun, and as such is nearly identical barring the fact that
-% this function graphs a histogram and runs the code in OneRun N times
-% (this is set  by default to 100, indicating 100 channels).
+function YTModel_CommentSubProbability
+%YTMODEL_CommentSubProbability
+% This function runs an investigation on the probability of commenting if
+% subscribed in YTModel_OneRun. Each other probability is held as a
+% constant, while the investigated probability is iterated by a specified
+% amount over Niterations iterations. The totals for each of the
+% Niterations runs of YTModel_OneRun are then graphed.
 
 % 03/2022 by John Bernardin
 
-% tracker for outputting time
-tic
+tic % tracker for outputting time
+
+rng(42) % seed to account for variation in the investigation
 
 % Basic Statistics
 Ndays = 52; % number of days
@@ -28,8 +29,17 @@ like_ns_prob = .005; % probability of liking a video if not subscribed
 like_sub_prob = .5; % probability of liking a video if subscribed
 dislike_prob = .0025; % probability of disliking a video (will not dislike if subscribed)
 comment_ns_prob = .00125; % probability of commenting on video if not subscribed
-comment_sub_prob = .025; % probability of commenting on video if subscribed
 sub_prob = .075; % chance of subscribing after viewing 
+
+Niterations = 10; % total number of iterations
+interval = .005; % the amount comment_sub_prob is increased each iteration
+
+% Data Tracking (for the line graphs)
+total_views = zeros(Niterations,1); 
+total_likes = zeros(Niterations,1);
+total_dislikes = zeros(Niterations,1);
+total_comments = zeros(Niterations,1);
+total_subs = zeros(Niterations,1); % total subscribers
 
 % exponential bases for the following stats in the respective function
 a=1.05; % views
@@ -37,20 +47,17 @@ b=1.25; % likes
 c=1.5; % subscribers
 d=2; % comments
 
-% Niterations = 50;
-Niterations = 100;
+% initialize comment_sub_prob vector
+comment_sub_prob=zeros(Niterations,1);
+comment_sub_prob(1)=.005;
+for k = 2:Niterations
+    comment_sub_prob(k) = comment_sub_prob(k-1)+interval;
+end
 
-% Data Tracking (for the histogram)
-total_views = zeros(Niterations,1); 
-total_likes = zeros(Niterations,1);
-total_dislikes = zeros(Niterations,1);
-total_comments = zeros(Niterations,1);
-total_subs = zeros(Niterations,1); % total subscribers
-
-% for each channel
+% for each iteration
 for k = 1:Niterations
-    fprintf('Iteration: %d\n\n',k) % print the iteration (indicating the channel) to track the code's progress
     subscribed = zeros(Nusers,1); % logical array of all users, true if subcribed, false if not
+    fprintf('Iteration: %d\n\n',k) % print each iteration to track progress
     % step through time (assuming one video uploaded a day)
     for i=1:Ndays
         % stat trackers per unit of time
@@ -67,7 +74,7 @@ for k = 1:Niterations
                 if rand > 1-like_sub_prob % with like_sub_prob chance
                     liked = liked+1; % the user likes the video
                 end
-                if rand > 1-comment_sub_prob % with comment_sub_prob_chance
+                if rand > 1-comment_sub_prob(k) % with comment_sub_prob_chance
                     commented = commented+1; % the user comments
                 end
             else % otherwise
@@ -83,7 +90,7 @@ for k = 1:Niterations
                 % at most the proportion of dislikes to views
                 p = min(recommmend_prob*a^viewed*b^liked*c^subbed*d^commented,max_p);
                 if rand > 1-p % with a p percent chance
-                    viewed = viewed+1; % view the video
+                    viewed = viewed+1;
                     if rand > 1-sub_prob % with a sub_prob chance
                         % subscribe
                         subscribed(j)=1;
@@ -91,7 +98,7 @@ for k = 1:Niterations
                         if rand > 1-like_sub_prob % like with a like_sub_prob chance
                             liked = liked+1;
                         end
-                        if rand > 1-comment_sub_prob
+                        if rand > 1-comment_sub_prob(k)
                             commented = commented+1; % comment with a comment_sub_prob chance
                         end
                     else % otherwise
@@ -107,9 +114,9 @@ for k = 1:Niterations
                 end    
             end
         end
+
         subscribed = shuffle(Nusers,subscribed); % randomize order of subscribers 
                                                  % (this is akin to randomizing the order in which users watch the video)
-        
         % Update total statistics
         total_views(k)=total_views(k)+viewed;
         total_likes(k)=total_likes(k)+liked;
@@ -118,33 +125,36 @@ for k = 1:Niterations
         total_subs(k)=total_subs(k)+subbed;
     end
 end
-% Graph total views
+% Graph all statistics against comment_sub_prob
 figure()
-histogram(total_views,floor(Niterations/5))
-title('Total Views: 100 Iterations')
+plot(comment_sub_prob,total_subs, 'r')
+hold on
+xlabel('comment subbed prob')
+ylabel('totals')
+title('Investigation of Comment (Subbed) Probability')
+plot(comment_sub_prob,total_views, 'k')
+plot(comment_sub_prob,total_likes, 'b')
+plot(comment_sub_prob,total_comments, 'g')
+plot(comment_sub_prob,total_dislikes, 'y')
+hold off
 
-% Graph total subscribers
+% Graph subs, comments and dislikes against comment_sub_prob
 figure()
-histogram(total_subs,floor(Niterations/5))
-title('Total Subscribers: 100 Iterations')
+plot(comment_sub_prob,total_subs, 'r')
+hold on
+xlabel('comment subbed prob')
+ylabel('totals')
+title('Investigation of Comment (Subbed) Probability: Subs,Comments,Dislikes')
+plot(comment_sub_prob,total_comments, 'g')
+plot(comment_sub_prob,total_dislikes, 'y')
+hold off
 
-% Graph total likes
+% Graph dislikes against comment_ns_prob
 figure()
-histogram(total_likes,floor(Niterations/5))
-title('Total Likes: 100 Iterations')
+title('Investigation of Comment (Subbed) Probability: Dislikes')
+plot(comment_sub_prob,total_dislikes, 'y')
 
-% Graph total comments
-figure()
-histogram(total_comments,floor(Niterations/5))
-title('Total Comments: 100 Iterations')
-
-% Graph total dislikes
-figure()
-histogram(total_dislikes,floor(Niterations/5))
-title('Total Dislikes: 100 Iterations')
-
-% output the runtime for the program
-toc
+toc % output the runtime for the program
 end
 
 % This is the Fisher-Yates shuffle algorithm implemented by user Jan on the

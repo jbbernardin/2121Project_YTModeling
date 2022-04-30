@@ -1,18 +1,16 @@
-function YTModel_CommentSubProbability
-%YTMODEL
-% This function models a youtube channel posting videos starting with 0 
-% views and 0 subscribers. Assuming one video is uploaded a day, this
-% each day the total number of users are iterated through and have a chance
-% to view the video. Their chance of viewing the video increases as views
-% accumulate on that video. Additionally, each viewer has a percent chance
-% of subscribing. A subscribed viewer has a significantly higher chance of
-% viewing future videos.
+function YTModel_SubProbability
+%YTMODEL_SubProbability
+% This function runs an investigation on the probability of subscribing 
+% in YTModel_OneRun. Each other probability is held as a
+% constant, while the investigated probability is iterated by a specified
+% amount over Niterations iterations. The totals for each of the
+% Niterations runs of YTModel_OneRun are then graphed.
 
-% 02/2022 by John Bernardin
+% 03/2022 by John Bernardin
 
-tic
+tic % tracker for outputting time
 
-rng(42)
+rng(42) % seed to account for variation in the investigation
 
 % Basic Statistics
 Ndays = 52; % number of days
@@ -20,13 +18,6 @@ Nusers = 10000000; % daily users (from sources it is 122000000, needed to reduce
 hours_uploaded_every_minute = 500; % hours of videos uploaded (from sources)
 recommended_vids = 10; % number of videos on one's recommended page without scrolling
 avg_vid_length = 12; % average length of a video in minutes (from source)
-
-% Graphing Vectors
-views = zeros(Ndays,1); % views per unit of time
-likes = zeros(Ndays,1); % likes per unit of time
-dislikes = zeros(Ndays,1); % dislikes per unit of time
-comments = zeros(Ndays,1); % comments per unit of time
-subs = zeros(Ndays,1); % subscribers per unit of time
 
 % Calculated Statistics
 daily_hours = 24*60*60*hours_uploaded_every_minute; % hours of video uploaded a day
@@ -38,10 +29,10 @@ like_ns_prob = .005; % probability of liking a video if not subscribed
 like_sub_prob = .5; % probability of liking a video if subscribed
 dislike_prob = .0025; % probability of disliking a video (will not dislike if subscribed)
 comment_ns_prob = .00125; % probability of commenting on video if not subscribed
-sub_prob = .075; % chance of subscribing after viewing 
+comment_sub_prob = .025; % probability of commenting on video if subscribed
 
-Niterations = 10;
-interval = .005;
+Niterations = 10; % total number of iterations
+interval = .015; % the amount sub_prob is increased each iteration
 
 % Data Tracking
 total_views = zeros(Niterations,1); 
@@ -50,21 +41,23 @@ total_dislikes = zeros(Niterations,1);
 total_comments = zeros(Niterations,1); % total comments
 total_subs = zeros(Niterations,1); % total subscribers
 
-a=1.05;
-b=1.25;
-c=1.5;
-d=2;
+% exponential bases for the following stats in the respective function
+a=1.05; % views
+b=1.25; % likes
+c=1.5; % subscribers
+d=2; % comments
 
-comment_sub_prob=zeros(Niterations,1);
-comment_sub_prob(1)=.005;
-
+% initialize sub_prob vector
+sub_prob=zeros(Niterations,1);
+sub_prob(1)=.015;
 for k = 2:Niterations
-    comment_sub_prob(k) = comment_sub_prob(k-1)+interval;
+    sub_prob(k) = sub_prob(k-1)+interval;
 end
 
+% for each iteration
 for k = 1:Niterations
-    subscribed = zeros(Nusers,1);
-    fprintf('Iteration: %d\n\n',k)
+    subscribed = zeros(Nusers,1); % logical array of all users, true if subcribed, false if not
+    fprintf('Iteration: %d\n\n',k) % print each iteration to track progress
     % step through time (assuming one video uploaded a day)
     for i=1:Ndays
         % stat trackers per unit of time
@@ -76,40 +69,45 @@ for k = 1:Niterations
 
         % for each user
         for j=1:Nusers
-            if subscribed(j)
-                viewed = viewed+1;
-                if rand > 1-like_sub_prob
-                    liked = liked+1;
+            if subscribed(j) % if the user is subscribed
+                viewed = viewed+1; % they view the video
+                if rand > 1-like_sub_prob % with like_sub_prob chance
+                    liked = liked+1; % the user likes the video
                 end
-                if rand > 1-comment_sub_prob(k)
-                    commented = commented+1;
+                if rand > 1-comment_sub_prob % with comment_sub_prob_chance
+                    commented = commented+1; % the user comments
                 end
-            else
-                if disliked == 0 || viewed == 0
-                    max_p = 1;
+            else % otherwise
+                if disliked == 0 || viewed == 0 % if the video has no dislikes or no views
+                    max_p = 1; % set the max probability to 1
                 else
-                    max_p = disliked/viewed;
+                    max_p = disliked/viewed; % otherwise set the max probability to the proportion of dislikes to views
                 end
+                % the function for determining view chance: at 0 views, likes,
+                % subs and dislikes, this probability is the same as
+                % recommended probability. The presence of any of these
+                % statistics increases the probability of viewing the video to
+                % at most the proportion of dislikes to views
                 p = min(recommmend_prob*a^viewed*b^liked*c^subbed*d^commented,max_p);
                 if rand > 1-p % with a p percent chance
                     viewed = viewed+1;
-                    if rand > 1-sub_prob % with a sub_prob chance
+                    if rand > 1-sub_prob(k) % with a sub_prob chance
                         % subscribe
                         subscribed(j)=1;
                         subbed=subbed+1;
-                        if rand > 1-like_sub_prob
+                        if rand > 1-like_sub_prob % like with a like_sub_prob chance
                             liked = liked+1;
                         end
-                        if rand > 1-comment_sub_prob(k)
-                            commented = commented+1;
+                        if rand > 1-comment_sub_prob
+                            commented = commented+1; % comment with a comment_sub_prob chance
                         end
-                    else
-                        if rand > 1-like_ns_prob
+                    else % otherwise
+                        if rand > 1-like_ns_prob % like with a like_ns_prob chance
                             liked = liked+1;
-                        elseif rand > 1-dislike_prob
+                        elseif rand > 1-dislike_prob % or dislike with a dislike_prob chance
                             disliked = disliked+1;
                         end
-                        if rand > 1-comment_ns_prob
+                        if rand > 1-comment_ns_prob % comment with a comment_ns_chance
                             commented = commented+1;
                         end
                     end
@@ -118,47 +116,44 @@ for k = 1:Niterations
         end
         subscribed = shuffle(Nusers,subscribed); % randomize order of subscribers 
                                                  % (this is akin to randomizing the order in which users watch the video)
+        % Update total statistics
         total_views(k)=total_views(k)+viewed;
         total_likes(k)=total_likes(k)+liked;
         total_dislikes(k)=total_dislikes(k)+disliked;
         total_comments(k)=total_comments(k)+commented;
         total_subs(k)=total_subs(k)+subbed;
-
-        % update graphing vectors
-        views(i)=viewed;
-        likes(i)=liked;
-        dislikes(i)=disliked;
-        comments(i)=commented;
-        subs(i)=subbed;
     end
 end
+% Graph all statistics against sub_prob
 figure()
-plot(comment_sub_prob,total_subs, 'r')
+plot(sub_prob,total_subs, 'r')
 hold on
-xlabel('comment subbed prob')
+xlabel('sub prob')
 ylabel('totals')
-title('Investigation of Comment (Subbed) Probability')
-plot(comment_sub_prob,total_views, 'k')
-plot(comment_sub_prob,total_likes, 'b')
-plot(comment_sub_prob,total_comments, 'g')
-plot(comment_sub_prob,total_dislikes, 'y')
+title('Investigation of Sub Probability')
+plot(sub_prob,total_views, 'k')
+plot(sub_prob,total_likes, 'b')
+plot(sub_prob,total_comments, 'g')
+plot(sub_prob,total_dislikes, 'y')
 hold off
 
+% Graph subs, comments and dislikes against sub_prob
 figure()
-plot(comment_sub_prob,total_subs, 'r')
+plot(sub_prob,total_subs, 'r')
 hold on
-xlabel('comment subbed prob')
+xlabel('sub prob')
 ylabel('totals')
-title('Investigation of Comment (Subbed) Probability: Subs,Comments,Dislikes')
-plot(comment_sub_prob,total_comments, 'g')
-plot(comment_sub_prob,total_dislikes, 'y')
+title('Investigation of Sub Probability: Subs,Comments,Dislikes')
+plot(sub_prob,total_comments, 'g')
+plot(sub_prob,total_dislikes, 'y')
 hold off
 
+% Graph dislikes against sub_prob
 figure()
-title('Investigation of Comment (Subbed) Probability: Dislikes')
-plot(comment_sub_prob,total_dislikes, 'y')
+title('Investigation of Sub Probability: Dislikes')
+plot(sub_prob,total_dislikes, 'y')
 
-toc
+toc % output the runtime for the program
 end
 
 % This is the Fisher-Yates shuffle algorithm implemented by user Jan on the
